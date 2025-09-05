@@ -21,12 +21,13 @@ import com.proit.dao.CategoryDaoImpl;
 import com.proit.dao.ProductDao;
 import com.proit.dao.ProductDaoImpl;
 import com.proit.dto.ProductDto;
+import com.proit.dto.ProductViewDto;
 import com.proit.model.Category;
 import com.proit.model.Product;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 @WebServlet({ "/products/index", "/products/create", "/products/update", "/products/edit/*", "/products/reset",
-		"/products/delete", "/products/delete/*", "/products/findbyname", "/products/paginate", "/products/view" })
+		"/products/delete", "/products/delete/*", "/products/findbyname", "/products/paginate", "/products/view/*" })
 public class ProductController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -71,8 +72,14 @@ public class ProductController extends HttpServlet {
 				dao.insert(entity);
 
 				Part part = request.getPart("image");
-				String fileName = FileUploadUtils.processImage("P" + entity.getId(), part, getServletContext());
-				entity.setImageUrl(fileName);
+				if (part != null && part.getSize() > 0) {
+				    String fileName = FileUploadUtils.processImage("P" + entity.getId(), part, getServletContext());
+				    entity.setImageUrl(fileName);
+				    dao.update(entity.getId(), entity.getImageUrl());
+				} else {
+					//nếu không chọn gì thì lấy ảnh mặc định
+					entity.setImageUrl("no-image.jpg");
+				}
 				System.out.println(entity.getImageUrl());
 
 				dao.update(entity.getId(), entity.getImageUrl());
@@ -103,6 +110,9 @@ public class ProductController extends HttpServlet {
 				Part part = request.getPart("image");
 				if (part != null && part.getSize() > 0) {
 					imageUrl = FileUploadUtils.processImage("P" + dto.getId(), part, getServletContext());
+				} else {
+					//nếu không chọn gì thì lấy ảnh mặc định
+					imageUrl = "no-image.jpg";
 				}
 
 				// copy các thuộc tính của DTO sang product entity
@@ -184,7 +194,8 @@ public class ProductController extends HttpServlet {
 
 					request.setAttribute("message", "Product has been deleted!");
 					// Dẫn về lại trang danh sách sau khi xoá xong
-					viewType = "/products/index";
+					response.sendRedirect(request.getContextPath() + "/products/index");
+					return;
 					
 				} else {
 					request.setAttribute("error", "The Id of category is null or empty");
@@ -193,7 +204,31 @@ public class ProductController extends HttpServlet {
 			} else if (uri.contains("reset")) {
 				System.out.println("reset");
 
-			} else if (uri.contains("findbyname")) {
+			} else if (uri.contains("view")) {
+				System.out.println("view");
+				
+				String path = request.getPathInfo();
+				String id = null;
+				if (path != null) {
+					id = path.substring(path.lastIndexOf("/") + 1);
+				}
+				
+				var productFound = dao.findById(Long.parseLong(id));
+				if (productFound == null) {
+					request.setAttribute("error", "Product not found with ID: " + id);
+					request.getRequestDispatcher("/products/index").forward(request, response);
+					return;
+				}
+				
+				ProductViewDto dto = new ProductViewDto();
+				BeanUtils.copyProperties(dto, productFound);
+				dto.setCategoryName(productFound.getCategory().getName());
+								
+				request.setAttribute("product", dto);
+				System.out.println(dto.getImageUrl());
+				viewType = "/admin/products/view.jsp";
+				
+			}else if (uri.contains("findbyname")) {
 				System.out.println("findbyname");
 
 			} else if (uri.contains("paginate")) {

@@ -38,8 +38,9 @@
 					<c:forEach var="product" items="${products}">
 						<tr class="">
 							<td scope="col">${product.id}</td>
-							<td><img src="images/${product.imageUrl}" alt=""
-								class="img-fluid" style="height: 80px" /></td>
+							<td><img
+								src="images/${product.imageUrl != null ? product.imageUrl : 'no-image.jpg'}"
+								alt="" class="img-fluid" style="height: 80px" /></td>
 							<td>${product.name}</td>
 							<td>${product.quantity}</td>
 							<td>${product.price}</td>
@@ -49,10 +50,12 @@
 							</a> <a href="${path}/edit/${product.id}"
 								class="btn btn-primary btn-sm"> <i class="fa fa-edit"
 									aria-hidden="true"></i> Edit
-							</a> <a href="${path}/delete/${product.id}"
-								class="btn btn-danger btn-sm"> <i class="fa fa-remove"
-									aria-hidden="true"></i> Delete
-							</a></td>
+							</a>
+								<button type="button"
+									onclick="confirmDelete('${path}/delete/${product.id}', '${product.name}')"
+									class="btn btn-danger btn-sm">
+									<i class="fa fa-remove" aria-hidden="true"></i> Delete
+								</button></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -78,6 +81,10 @@
 			</div>
 		</div>
 	</main>
+
+	<!-- 	define modal dialog to confirm Delete the product -->
+	<%@ include file="/admin/common/delete-confirm-modal.jsp"%>
+
 	<%@ include file="/admin/common/footer.jsp"%>
 </body>
 </html>

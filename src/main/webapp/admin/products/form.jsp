@@ -96,7 +96,7 @@
 				<div class="col-6">
 					<div class="mb-3">
 						<label for="image" class="form-label">Product Image</label> <br />
-						<img src="images/${product.imageUrl}" alt="" class="img-fluid"
+						<img src="images/${product.imageUrl != null ? product.imageUrl : 'no-image.jpg'}" alt="" class="img-fluid"
 							style="height: 150px" /><input type="file"
 							class="form-control form-control-sm" name="image" id="image"
 							placeholder="Product Image" />
