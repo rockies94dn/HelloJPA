@@ -3,7 +3,7 @@ package com.proit.common;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tomcat.jakartaee.commons.compress.utils.FileNameUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Part;
@@ -21,7 +21,7 @@ public class FileUploadUtils {
 		}
 
 		String uploadFileName = part.getSubmittedFileName();
-		String storedFileName = fileName + "." + FileNameUtils.getExtension(uploadFileName);
+		String storedFileName = fileName + "." + org.apache.commons.io.FilenameUtils.getExtension(uploadFileName);
 		String storedFile = uploadPath + File.separator + storedFileName;
 		System.out.println(storedFile);
 		part.write(storedFile);
