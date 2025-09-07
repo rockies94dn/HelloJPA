@@ -22,6 +22,10 @@ public interface ProductDao {
 	void insert(Product entity);
 
 	void update(Long id, String imageUrl);
+
+	Long countByName(String name);
+
+	List<Product> findByName(String name, int pageNo, int pageSize);
 	
 
 }

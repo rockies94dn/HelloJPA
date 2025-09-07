@@ -16,6 +16,9 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import com.proit.common.CustomBeanUtils;
 import com.proit.common.FileUploadUtils;
+import com.proit.common.PageInfor;
+import com.proit.common.PaginationUtils;
+import com.proit.common.ProductMapper;
 import com.proit.dao.CategoryDao;
 import com.proit.dao.CategoryDaoImpl;
 import com.proit.dao.ProductDao;
@@ -27,7 +30,7 @@ import com.proit.model.Product;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 @WebServlet({ "/products/index", "/products/create", "/products/update", "/products/edit/*", "/products/reset",
-		"/products/delete", "/products/delete/*", "/products/findbyname", "/products/paginate", "/products/view/*" })
+		"/products/delete", "/products/delete/*", "/products/search", "/products/view/*" })
 public class ProductController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -73,11 +76,11 @@ public class ProductController extends HttpServlet {
 
 				Part part = request.getPart("image");
 				if (part != null && part.getSize() > 0) {
-				    String fileName = FileUploadUtils.processImage("P" + entity.getId(), part, getServletContext());
-				    entity.setImageUrl(fileName);
-				    dao.update(entity.getId(), entity.getImageUrl());
+					String fileName = FileUploadUtils.processImage("P" + entity.getId(), part, getServletContext());
+					entity.setImageUrl(fileName);
+					dao.update(entity.getId(), entity.getImageUrl());
 				} else {
-					//nếu không chọn gì thì lấy ảnh mặc định
+					// nếu không chọn gì thì lấy ảnh mặc định
 					entity.setImageUrl("no-image.jpg");
 				}
 				System.out.println(entity.getImageUrl());
@@ -111,7 +114,7 @@ public class ProductController extends HttpServlet {
 				if (part != null && part.getSize() > 0) {
 					imageUrl = FileUploadUtils.processImage("P" + dto.getId(), part, getServletContext());
 				} else {
-					//nếu không chọn gì thì lấy ảnh mặc định
+					// nếu không chọn gì thì lấy ảnh mặc định
 					imageUrl = "no-image.jpg";
 				}
 
@@ -184,6 +187,7 @@ public class ProductController extends HttpServlet {
 						request.getRequestDispatcher("/products/index").forward(request, response);
 						return;
 					}
+
 					// Xoá hình ảnh sản phẩm trong thư mục
 					if (productFound.getImageUrl() != null && !productFound.getImageUrl().isEmpty()) {
 						FileUploadUtils.deleteFile(productFound.getImageUrl(), getServletContext());
@@ -196,7 +200,7 @@ public class ProductController extends HttpServlet {
 					// Dẫn về lại trang danh sách sau khi xoá xong
 					response.sendRedirect(request.getContextPath() + "/products/index");
 					return;
-					
+
 				} else {
 					request.setAttribute("error", "The Id of category is null or empty");
 				}
@@ -206,39 +210,61 @@ public class ProductController extends HttpServlet {
 
 			} else if (uri.contains("view")) {
 				System.out.println("view");
-				
+
 				String path = request.getPathInfo();
 				String id = null;
 				if (path != null) {
 					id = path.substring(path.lastIndexOf("/") + 1);
 				}
-				
+
 				var productFound = dao.findById(Long.parseLong(id));
 				if (productFound == null) {
 					request.setAttribute("error", "Product not found with ID: " + id);
 					request.getRequestDispatcher("/products/index").forward(request, response);
 					return;
 				}
-				
+
 				ProductViewDto dto = new ProductViewDto();
 				BeanUtils.copyProperties(dto, productFound);
 				dto.setCategoryName(productFound.getCategory().getName());
-								
+
 				request.setAttribute("product", dto);
 				System.out.println(dto.getImageUrl());
 				viewType = "/admin/products/view.jsp";
-				
-			}else if (uri.contains("findbyname")) {
-				System.out.println("findbyname");
 
-			} else if (uri.contains("paginate")) {
-				System.out.println("paginate");
+			} else if (uri.contains("search")) {
+				System.out.println("search");
+
+				String keyword = request.getParameter("keyword");
+
+				if (keyword == null || keyword.isEmpty()) {
+					keyword = "";
+				}
+
+				PageInfor pageInfo = PaginationUtils.getPageFromRequest(request);
+
+				int pageNo = pageInfo.getPageNo();
+				int pageSize = pageInfo.getPageSize();
+				List<Product> products = dao.findByName(keyword, pageNo, pageSize);
+				Long totalCount = dao.countByName(keyword);
+				int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+				
+				request.setAttribute("totalPages", totalPages);
+				request.setAttribute("totalCount", totalCount);
+				request.setAttribute("page", pageNo + 1);
+				request.setAttribute("size", pageSize);
+
+				request.setAttribute("products", ProductMapper.toDtoList(products));
+				request.setAttribute("keyword", keyword);
+
+				viewType = "/admin/products/search.jsp";
 
 			} else {
 				System.out.println("Index");
 				viewType = "/admin/products/list.jsp";
 				List<Product> products = dao.findAll();
-				request.setAttribute("products", products);
+
+				request.setAttribute("products", ProductMapper.toDtoList(products));
 
 			}
 		} catch (Exception e) {

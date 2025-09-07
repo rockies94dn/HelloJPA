@@ -21,7 +21,7 @@ public class FileUploadUtils {
 		}
 
 		String uploadFileName = part.getSubmittedFileName();
-		String storedFileName = fileName + "." + org.apache.commons.io.FilenameUtils.getExtension(uploadFileName);
+		String storedFileName = fileName + "." + FilenameUtils.getExtension(uploadFileName);
 		String storedFile = uploadPath + File.separator + storedFileName;
 		System.out.println(storedFile);
 		part.write(storedFile);

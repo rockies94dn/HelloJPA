@@ -119,4 +119,24 @@ public class ProductDaoImpl implements ProductDao {
 		query.setParameter("name", "%" + name + "%");
 		return query.getResultList();
 	}
+
+	@Override
+	public List<Product> findByName(String name, int pageNo, int pageSize) {
+		EntityManager em = JpaHelper.instance();
+		String jpql = "SELECT p FROM Product p WHERE p.name LIKE :name";
+		TypedQuery<Product> query = em.createQuery(jpql, Product.class);
+		query.setParameter("name", "%" + name + "%");
+		query.setFirstResult(pageNo * pageSize);
+		query.setMaxResults(pageSize);
+		return query.getResultList();
+	}
+
+	@Override
+	public Long countByName(String name) {
+		EntityManager em = JpaHelper.instance();
+		String jpql = "SELECT COUNT(p) FROM Product p WHERE p.name LIKE :name";
+		TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+		query.setParameter("name", "%" + name + "%");
+		return query.getSingleResult();
+	}
 }
