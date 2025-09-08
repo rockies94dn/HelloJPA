@@ -80,6 +80,9 @@
 				</nav>
 			</div>
 		</div>
+		<div class="col">
+			<a href="${path}/deleteByStatus" class="btn btn-danger btn-sm">Delete products with out of stock or deleted status</a>
+		</div>
 	</main>
 
 	<!-- 	define modal dialog to confirm Delete the product -->

@@ -19,10 +19,12 @@
 
 		<div class="d-flex justify-content-between mb-3">
 			<div class="col-5">
-				<form method="get" action="${path}/search">
+				<form method="get" action="${path}/searchSort">
 					<div class="input-group input-group-sm ">
 						<input type="text" class="form-control"
-							placeholder="Search by name..." name="keyword" value="${keyword}">
+							placeholder="Product name" name="name" value="${name}">
+						<input type="number" class="form-control"
+							placeholder="Product price" name="price" value="${price}">
 						<button class="btn btn-outline-secondary" type="submit"
 							id="button-search">
 							<i class="fa fa-search" aria-hidden="true"></i> Search
@@ -89,18 +91,18 @@
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
 								<li class="page-item"><a class="page-link"
-									href="${path }/search?keyword=${keyword}&page=1&size=${size == null ? 10 : size}"
+									href="${path }/searchSort?name=${name}&price=${price}&page=1&size=${size == null ? 5 : size}"
 									aria-label="First"> <span aria-hidden="true">&laquo;</span>
 										<span class="sr-only">Previous</span>
 								</a></li>
 								<c:forEach var="i" begin="1" end="${totalPages}">
 									<li class="page-item ${currentPage == i ? 'active' : ''}">
 										<a class="page-link"
-										href="${path }/search?keyword=${keyword}&page=${i}">${i }</a>
+										href="${path }/searchSort?name=${name}&price=${price}&page=${i}">${i }</a>
 									</li>
 								</c:forEach>
 								<li class="page-item"><a class="page-link"
-									href="${path }/search?keyword=${keyword}&page=${totalPages }&size=${size == null ? 10 : size}"
+									href="${path }/searchSort?name=${name}&price=${price}&page=${totalPages }&size=${size == null ? 5 : size}"
 									aria-label="Last"> <span aria-hidden="true">&raquo;</span>
 										<span class="sr-only">Next</span>
 								</a></li>
@@ -110,11 +112,7 @@
 				</div>
 			</c:otherwise>
 		</c:choose>
-		<div class="col">
-			<button class="btn btn-danger btn-sm"
-				onclick="confirmDelete('${path}/deleteByStatus}', 'All out of stock and deleted products')">Delete
-				products with out of stock or deleted status</button>
-		</div>
+
 	</main>
 
 	<!-- 	define modal dialog to confirm Delete the product -->

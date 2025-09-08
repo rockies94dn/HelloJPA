@@ -19,22 +19,31 @@
 
 		<div class="d-flex justify-content-between mb-3">
 			<div class="col-5">
-				<form method="get" action="${path}/search">
-					<div class="input-group input-group-sm ">
-						<input type="text" class="form-control"
-							placeholder="Search by name..." name="keyword" value="${keyword}">
-						<button class="btn btn-outline-secondary" type="submit"
-							id="button-search">
-							<i class="fa fa-search" aria-hidden="true"></i> Search
-						</button>
-					</div>
-				</form>
+				<form method="get" action="${path}/searchByStatus">
+					<label for="status" class="form-label">Status</label> <select
+						class="form-select form-select-sm" name="status" id="status">
+						<option value="AVAILABLE"
+							${product.status == 'AVAILABLE' ? 'selected' : ''}>Available</option>
+						<option value="OUT_OF_STOCK"
+							${product.status == 'OUT_OF_STOCK' ? 'selected' : ''}>Out
+							of stock</option>
+						<option value="DISCONTINUE"
+							${product.status == 'DISCONTINUE' ? 'selected' : ''}>Discontinue</option>
+						<option value="DELETED"
+							${product.status == 'DELETED' ? 'selected' : ''}>Deleted</option>
+					</select>
+					<button class="btn btn-outline-secondary" type="submit"
+						id="button-search">
+						<i class="fa fa-search" aria-hidden="true"></i> Search
+					</button>
 			</div>
-			<div class="">
-				<a href="${path}/create" class="btn btn-outline-primary btn-sm">
-					<i class="fa fa-plus" aria-hidden="true"></i> Create
-				</a>
-			</div>
+			</form>
+		</div>
+		<div class="">
+			<a href="${path}/create" class="btn btn-outline-primary btn-sm">
+				<i class="fa fa-plus" aria-hidden="true"></i> Create
+			</a>
+		</div>
 		</div>
 		<hr />
 		<c:choose>
@@ -89,18 +98,18 @@
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
 								<li class="page-item"><a class="page-link"
-									href="${path }/search?keyword=${keyword}&page=1&size=${size == null ? 10 : size}"
+									href="${path }/searchByStatus?status=${status}&page=1&size=${size == null ? 10 : size}"
 									aria-label="First"> <span aria-hidden="true">&laquo;</span>
 										<span class="sr-only">Previous</span>
 								</a></li>
 								<c:forEach var="i" begin="1" end="${totalPages}">
 									<li class="page-item ${currentPage == i ? 'active' : ''}">
 										<a class="page-link"
-										href="${path }/search?keyword=${keyword}&page=${i}">${i }</a>
+										href="${path }/searchByStatus?status=${status}&page=${i}">${i }</a>
 									</li>
 								</c:forEach>
 								<li class="page-item"><a class="page-link"
-									href="${path }/search?keyword=${keyword}&page=${totalPages }&size=${size == null ? 10 : size}"
+									href="${path }/searchByStatus?status=${status}&page=${totalPages }&size=${size == null ? 10 : size}"
 									aria-label="Last"> <span aria-hidden="true">&raquo;</span>
 										<span class="sr-only">Next</span>
 								</a></li>

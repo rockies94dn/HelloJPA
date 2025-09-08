@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
 
 import com.proit.common.CustomBeanUtils;
 import com.proit.common.FileUploadUtils;
@@ -27,10 +28,12 @@ import com.proit.dto.ProductDto;
 import com.proit.dto.ProductViewDto;
 import com.proit.model.Category;
 import com.proit.model.Product;
+import com.proit.model.ProductStatus;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 @WebServlet({ "/products/index", "/products/create", "/products/update", "/products/edit/*", "/products/reset",
-		"/products/delete", "/products/delete/*", "/products/search", "/products/view/*" })
+		"/products/delete", "/products/delete/*", "/products/search", "/products/view/*", "/products/listByCategory/*",
+		"/products/searchSort", "/products/deleteByStatus", "/products/searchByStatus" })
 public class ProductController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -165,6 +168,23 @@ public class ProductController extends HttpServlet {
 
 				viewType = "/admin/products/form.jsp";
 
+			} else if (uri.contains("deleteByStatus")) {
+
+				List<Product> products = dao.findByStatusOutOfStockAndDeleted();
+				if (products.isEmpty()) {
+					request.setAttribute("message", "No products found with status out of stock or deleted");
+				} else {
+					for (Product product : products) {
+						if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
+							FileUploadUtils.deleteFile(product.getImageUrl(), getServletContext());
+						}
+						dao.delete(product.getId());
+					}
+					request.setAttribute("message", "Products with out of stock or deleted status have been removed!");
+				}
+
+				viewType = "/admin/products/search.jsp";
+
 			} else if (uri.contains("delete")) {
 
 				// Xoá đối tượng được chọn
@@ -232,6 +252,61 @@ public class ProductController extends HttpServlet {
 				System.out.println(dto.getImageUrl());
 				viewType = "/admin/products/view.jsp";
 
+			} else if (uri.contains("searchByStatus")) {
+				System.out.println("searchByStatus");
+				
+				String statusStr = request.getParameter("status");
+				ProductStatus status = ProductStatus.valueOf(statusStr != null ? statusStr : "AVAILABLE");
+				
+				List<Product> products;
+				PageInfor pageInfo = PaginationUtils.getPageFromRequest(request);
+				int pageNo = pageInfo.getPageNo();
+				int pageSize = pageInfo.getPageSize();
+				Long totalCount;
+				
+				products = dao.findByStatus(status, pageNo, pageSize);
+				totalCount = dao.countByStatus(status);
+				int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+				
+				request.setAttribute("totalPages", totalPages);
+				request.setAttribute("totalCount", totalCount);
+				request.setAttribute("page", pageNo + 1);
+				request.setAttribute("size", pageSize);
+				request.setAttribute("products", ProductMapper.toDtoList(products));
+				request.setAttribute("status", status);
+				
+				viewType = "/admin/products/search-by-status.jsp";
+				
+			} else if (uri.contains("searchSort")) {
+				System.out.println("searchSort");
+
+				String name = request.getParameter("name");
+				String priceStr = request.getParameter("price");
+
+				name = name != null ? name.trim() : "";
+				Double price = Double.parseDouble(priceStr != null ? priceStr : "0");
+
+				List<Product> products;
+				PageInfor pageInfo = PaginationUtils.getPageFromRequest(request);
+				int pageNo = pageInfo.getPageNo();
+				int pageSize = pageInfo.getPageSize();
+				Long totalCount;
+
+				products = dao.findByNameAndPrice(name, price, pageNo, pageSize);
+				totalCount = dao.countByNameAndPrice(name, price);
+
+				int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+				request.setAttribute("totalPages", totalPages);
+				request.setAttribute("totalCount", totalCount);
+				request.setAttribute("page", pageNo + 1);
+				request.setAttribute("size", pageSize);
+				request.setAttribute("products", ProductMapper.toDtoList(products));
+				request.setAttribute("name", name);
+				request.setAttribute("price", price);
+
+				viewType = "/admin/products/search-sort.jsp";
+
 			} else if (uri.contains("search")) {
 				System.out.println("search");
 
@@ -248,7 +323,7 @@ public class ProductController extends HttpServlet {
 				List<Product> products = dao.findByName(keyword, pageNo, pageSize);
 				Long totalCount = dao.countByName(keyword);
 				int totalPages = (int) Math.ceil((double) totalCount / pageSize);
-				
+
 				request.setAttribute("totalPages", totalPages);
 				request.setAttribute("totalCount", totalCount);
 				request.setAttribute("page", pageNo + 1);
@@ -258,6 +333,34 @@ public class ProductController extends HttpServlet {
 				request.setAttribute("keyword", keyword);
 
 				viewType = "/admin/products/search.jsp";
+
+			} else if (uri.contains("listByCategory")) {
+				System.out.println("listByCategory");
+				List<Product> products;
+				PageInfor pageInfo = PaginationUtils.getPageFromRequest(request);
+				int pageNo = pageInfo.getPageNo();
+				int pageSize = pageInfo.getPageSize();
+				Long totalCount;
+				String categoryId = request.getParameter("categoryId");
+				if (categoryId == null || categoryId.isEmpty()) {
+					products = dao.findAll(pageNo, pageSize);
+					totalCount = dao.countAll();
+				} else {
+					products = dao.findByCategory(Long.parseLong(categoryId), pageNo, pageSize);
+					totalCount = dao.countByCategory(Long.parseLong(categoryId));
+				}
+
+				int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+				request.setAttribute("totalPages", totalPages);
+				request.setAttribute("totalCount", totalCount);
+				request.setAttribute("page", pageNo + 1);
+				request.setAttribute("size", pageSize);
+				request.setAttribute("selectedCategoryId", categoryId);
+				request.setAttribute("categories", categoryDao.findAll());
+				request.setAttribute("products", ProductMapper.toDtoList(products));
+
+				viewType = "/admin/products/list-by-category.jsp";
 
 			} else {
 				System.out.println("Index");

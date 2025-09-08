@@ -18,23 +18,35 @@
 		<hr>
 
 		<div class="d-flex justify-content-between mb-3">
-			<div class="col-5">
-				<form method="get" action="${path}/search">
-					<div class="input-group input-group-sm ">
-						<input type="text" class="form-control"
-							placeholder="Search by name..." name="keyword" value="${keyword}">
-						<button class="btn btn-outline-secondary" type="submit"
-							id="button-search">
-							<i class="fa fa-search" aria-hidden="true"></i> Search
-						</button>
+			<div class="col-6">
+				<form action="${path}/listByCategory" method="get"
+					class="form-inline">
+					<div class="input-group">
+						<label for="categoryId" class="form-label mt-2">Category:</label>
+						<select name="categoryId" class="form-control mx-2">
+							<option value="">All Categories</option>
+							<c:forEach var="category" items="${categories}">
+								<option value="${category.categoryId}"
+									${category.categoryId == selectedCategoryId ? 'selected' : ''}>${category.name}</option>
+							</c:forEach>
+						</select>
+
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-search"></i> Display
+							</button>
+						</div>
 					</div>
 				</form>
 			</div>
-			<div class="">
-				<a href="${path}/create" class="btn btn-outline-primary btn-sm">
-					<i class="fa fa-plus" aria-hidden="true"></i> Create
-				</a>
-			</div>
+		</div>
+
+		<hr />
+		<div class="">
+			<a href="${path}/create" class="btn btn-outline-primary btn-sm">
+				<i class="fa fa-plus" aria-hidden="true"></i> Create
+			</a>
+		</div>
 		</div>
 		<hr />
 		<c:choose>
@@ -89,18 +101,18 @@
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
 								<li class="page-item"><a class="page-link"
-									href="${path }/search?keyword=${keyword}&page=1&size=${size == null ? 10 : size}"
+									href="${path }/search?categoryId=${selectedCategoryId}&page=1&size=${size == null ? 10 : size}"
 									aria-label="First"> <span aria-hidden="true">&laquo;</span>
 										<span class="sr-only">Previous</span>
 								</a></li>
 								<c:forEach var="i" begin="1" end="${totalPages}">
 									<li class="page-item ${currentPage == i ? 'active' : ''}">
 										<a class="page-link"
-										href="${path }/search?keyword=${keyword}&page=${i}">${i }</a>
+										href="${path }/search?categoryId=${selectedCategoryId}&page=${i}">${i }</a>
 									</li>
 								</c:forEach>
 								<li class="page-item"><a class="page-link"
-									href="${path }/search?keyword=${keyword}&page=${totalPages }&size=${size == null ? 10 : size}"
+									href="${path }/search?search?categoryId=${selectedCategoryId}&page=${totalPages }&size=${size == null ? 10 : size}"
 									aria-label="Last"> <span aria-hidden="true">&raquo;</span>
 										<span class="sr-only">Next</span>
 								</a></li>
@@ -110,11 +122,7 @@
 				</div>
 			</c:otherwise>
 		</c:choose>
-		<div class="col">
-			<button class="btn btn-danger btn-sm"
-				onclick="confirmDelete('${path}/deleteByStatus}', 'All out of stock and deleted products')">Delete
-				products with out of stock or deleted status</button>
-		</div>
+
 	</main>
 
 	<!-- 	define modal dialog to confirm Delete the product -->
