@@ -13,7 +13,7 @@ import com.proit.dao.ProductDao;
 import com.proit.dao.ProductDaoImpl;
 import com.proit.model.ProductsInCategoryStatistics;
 
-@WebServlet("/statistics/productsByCategory")
+@WebServlet({ "/statistics/productsByCategory", "/statistics/productStatusSummary" })
 public class StatisticsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,11 @@ public class StatisticsController extends HttpServlet {
 
 				request.setAttribute("data", statistics);
 
-			} else {
+			} else if (uri.contains("productStatusSummary")){
+				System.out.println("productStatusSummary");
+				var statistics = dao.countProductByStatus();
+				request.setAttribute("data", statistics);
+				viewType = "/admin/statistics/products-status-summary.jsp";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -112,7 +112,7 @@
 		</c:choose>
 		<div class="col">
 			<button class="btn btn-danger btn-sm"
-				onclick="confirmDelete('${path}/deleteByStatus}', 'All out of stock and deleted products')">Delete
+				onclick="confirmDelete('${path}/deleteByStatus', 'All out of stock and deleted products')">Delete
 				products with out of stock or deleted status</button>
 		</div>
 	</main>

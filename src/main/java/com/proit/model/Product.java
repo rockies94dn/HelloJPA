@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedNativeQuery;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -27,6 +28,7 @@ import lombok.Setter;
 @Table(name = "products")
 @NamedQuery(name = "Product.findByStatus", query = "SELECT p FROM Product p WHERE p.status = :status")
 @NamedQuery(name = "Product.countByStatus", query = "SELECT COUNT(p) FROM Product p WHERE p.status = :status")
+@NamedQuery(name = "Product.updateStatus", query = "UPDATE Product SET status = :status WHERE id = :id")
 public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;

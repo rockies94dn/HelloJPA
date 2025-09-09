@@ -10,6 +10,7 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>com.proit.model.Category</class>
         <class>com.proit.model.Product</class>
+        <class>com.proit.model.User</class>
 
         <!-- Khai báo entity class nếu có -->
         <!-- <class>com.proit.entity.User</class> -->
@@ -27,7 +28,7 @@
             <!-- Debug tiện ích -->
             <property name="eclipselink.logging.level" value="FINE"/>
             
-            <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
         </properties>
     </persistence-unit>
 </persistence>

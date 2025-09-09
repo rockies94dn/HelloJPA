@@ -18,32 +18,33 @@
 		<hr>
 
 		<div class="d-flex justify-content-between mb-3">
-			<div class="col-5">
+			<div class="row">
 				<form method="get" action="${path}/searchByStatus">
-					<label for="status" class="form-label">Status</label> <select
-						class="form-select form-select-sm" name="status" id="status">
-						<option value="AVAILABLE"
-							${product.status == 'AVAILABLE' ? 'selected' : ''}>Available</option>
-						<option value="OUT_OF_STOCK"
-							${product.status == 'OUT_OF_STOCK' ? 'selected' : ''}>Out
-							of stock</option>
-						<option value="DISCONTINUE"
-							${product.status == 'DISCONTINUE' ? 'selected' : ''}>Discontinue</option>
-						<option value="DELETED"
-							${product.status == 'DELETED' ? 'selected' : ''}>Deleted</option>
-					</select>
-					<button class="btn btn-outline-secondary" type="submit"
-						id="button-search">
-						<i class="fa fa-search" aria-hidden="true"></i> Search
-					</button>
+					<div class="input-group input-group-sm">
+						<label for="status" class="form-label mt-2">Status</label> <select
+							class="form-select form-select-sm mx-2" name="status" id="status">
+							<option value="AVAILABLE"
+								${status == 'AVAILABLE' ? 'selected' : ''}>Available</option>
+							<option value="OUT_OF_STOCK"
+								${status == 'OUT_OF_STOCK' ? 'selected' : ''}>Out
+								of stock</option>
+							<option value="DISCONTINUE"
+								${status == 'DISCONTINUE' ? 'selected' : ''}>Discontinue</option>
+							<option value="DELETED"
+								${status == 'DELETED' ? 'selected' : ''}>Deleted</option>
+						</select>
+						<button class="btn btn-outline-secondary btn-sm " type="submit"
+							id="button-search">
+							<i class="fa fa-search" aria-hidden="true"></i> Search
+						</button>
+					</div>
+				</form>
 			</div>
-			</form>
-		</div>
-		<div class="">
-			<a href="${path}/create" class="btn btn-outline-primary btn-sm">
-				<i class="fa fa-plus" aria-hidden="true"></i> Create
-			</a>
-		</div>
+			<div class="">
+				<a href="${path}/create" class="btn btn-outline-primary btn-sm">
+					<i class="fa fa-plus" aria-hidden="true"></i> Create
+				</a>
+			</div>
 		</div>
 		<hr />
 		<c:choose>
@@ -63,6 +64,7 @@
 								<th scrope="col" class="w-50">Name</th>
 								<th scrope="col">Quantity</th>
 								<th scrope="col">Price</th>
+								<th scrope="col">Status</th>
 								<th scrope="col">&nbsp;</th>
 							</tr>
 						</thead>
@@ -76,6 +78,25 @@
 									<td>${product.name}</td>
 									<td>${product.quantity}</td>
 									<td>${product.price}</td>
+									<td>
+										<form action="${path }/updateStatus" method="post">
+											<select class="form-select form-select-sm mx-2" name="status"
+												id="status">
+												<option value="AVAILABLE"
+													${product.status == 'AVAILABLE' ? 'selected' : ''}>Available</option>
+												<option value="OUT_OF_STOCK"
+													${product.status == 'OUT_OF_STOCK' ? 'selected' : ''}>Out
+													of stock</option>
+												<option value="DISCONTINUE"
+													${product.status == 'DISCONTINUE' ? 'selected' : ''}>Discontinue</option>
+												<option value="DELETED"
+													${product.status == 'DELETED' ? 'selected' : ''}>Deleted</option>
+											</select> <input type="hidden" name="id" value="${product.id }" />
+											<button type="submit" class="btn btn-primary btn-sm">
+												<i class="fa fa-save" aria-hidden="true"></i>Update
+											</button>
+										</form>
+									</td>
 									<td><a href="${path}/view/${product.id}"
 										class="btn btn-outline-primary btn-sm"> <i
 											class="fa fa-eye" aria-hidden="true"></i> View
@@ -121,7 +142,7 @@
 		</c:choose>
 		<div class="col">
 			<button class="btn btn-danger btn-sm"
-				onclick="confirmDelete('${path}/deleteByStatus}', 'All out of stock and deleted products')">Delete
+				onclick="confirmDelete('${path}/deleteByStatus', 'All out of stock and deleted products')">Delete
 				products with out of stock or deleted status</button>
 		</div>
 	</main>

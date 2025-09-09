@@ -1,5 +1,6 @@
 package com.proit.controller;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,9 +32,9 @@ import com.proit.model.Product;
 import com.proit.model.ProductStatus;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
-@WebServlet({ "/products/index", "/products/create", "/products/update", "/products/edit/*", "/products/reset",
-		"/products/delete", "/products/delete/*", "/products/search", "/products/view/*", "/products/listByCategory/*",
-		"/products/searchSort", "/products/deleteByStatus", "/products/searchByStatus" })
+@WebServlet({ "/products/index", "/products/create", "/products/update", "/products/updateStatus", "/products/edit/*",
+		"/products/reset", "/products/delete", "/products/delete/*", "/products/search", "/products/view/*",
+		"/products/listByCategory/*", "/products/searchSort", "/products/deleteByStatus", "/products/searchByStatus" })
 public class ProductController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -92,6 +93,29 @@ public class ProductController extends HttpServlet {
 				dto.setId(entity.getId());
 				request.setAttribute("products", dto);
 				request.setAttribute("message", "New product has been inserted!");
+
+			} else if (uri.contains("updateStatus") && request.getMethod().toUpperCase().contains("POST")) {
+				System.out.println("updateStatus");
+				String id = request.getParameter("id");
+				String status = request.getParameter("status");
+
+				if (id == null || id.isEmpty()) {
+					throw new Exception("Product ID is required to update status.");
+				}
+
+				if (status == null || status.isEmpty()) {
+					throw new Exception("Product status is required to update.");
+				}
+				
+				ProductStatus productStatus = ProductStatus.valueOf(status);
+				dao.updateStatusById(Long.parseLong(id), productStatus);
+				
+				request.setAttribute("status", productStatus);
+				request.setAttribute("message", "Product status has been updated!");
+				RequestDispatcher rd = request.getRequestDispatcher("/products/searchByStatus?status=" + productStatus);
+				rd.forward(request, response);
+
+				return;		
 
 			} else if (uri.contains("update") && request.getMethod().toUpperCase().contains("POST")) {
 				System.out.println("update");
@@ -254,29 +278,29 @@ public class ProductController extends HttpServlet {
 
 			} else if (uri.contains("searchByStatus")) {
 				System.out.println("searchByStatus");
-				
+
 				String statusStr = request.getParameter("status");
 				ProductStatus status = ProductStatus.valueOf(statusStr != null ? statusStr : "AVAILABLE");
-				
+
 				List<Product> products;
 				PageInfor pageInfo = PaginationUtils.getPageFromRequest(request);
 				int pageNo = pageInfo.getPageNo();
 				int pageSize = pageInfo.getPageSize();
 				Long totalCount;
-				
+
 				products = dao.findByStatus(status, pageNo, pageSize);
 				totalCount = dao.countByStatus(status);
 				int totalPages = (int) Math.ceil((double) totalCount / pageSize);
-				
+
 				request.setAttribute("totalPages", totalPages);
 				request.setAttribute("totalCount", totalCount);
 				request.setAttribute("page", pageNo + 1);
 				request.setAttribute("size", pageSize);
 				request.setAttribute("products", ProductMapper.toDtoList(products));
 				request.setAttribute("status", status);
-				
+
 				viewType = "/admin/products/search-by-status.jsp";
-				
+
 			} else if (uri.contains("searchSort")) {
 				System.out.println("searchSort");
 

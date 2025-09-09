@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import com.proit.dto.ProductStatusSummary;
 import com.proit.jpa.JpaHelper;
 import com.proit.model.Category;
 import com.proit.model.Product;
@@ -14,6 +15,7 @@ import com.proit.model.ProductsInCategoryStatistics;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
+import jakarta.persistence.StoredProcedureQuery;
 import jakarta.persistence.TypedQuery;
 
 public class ProductDaoImpl implements ProductDao {
@@ -279,6 +281,46 @@ public class ProductDaoImpl implements ProductDao {
 		TypedQuery<Long> query = em.createNamedQuery("Product.countByStatus", Long.class);
 		query.setParameter("status", status);
 		return query.getSingleResult();
+	}
+
+	@Override
+	public void updateStatusById(Long id, ProductStatus status) {
+		EntityManager em = JpaHelper.instance();
+		EntityTransaction trans = em.getTransaction();
+
+		try {
+			trans.begin();
+			Query query = em.createNamedQuery("Product.updateStatus");
+			query.setParameter("status", status);
+			query.setParameter("id", id);
+			query.executeUpdate();
+			trans.commit();
+			em.clear();
+		} catch (Exception e) {
+			e.printStackTrace();
+			trans.rollback();
+		}
+
+	}
+
+	@Override
+	public List<ProductStatusSummary> countProductByStatus() {
+		EntityManager em = JpaHelper.instance();
+		String storedProcedureName = "spSummaryByStatus";
+		StoredProcedureQuery query = em.createStoredProcedureQuery(storedProcedureName);
+		query.execute();
+		List<Object[]> results = query.getResultList();
+		List<ProductStatusSummary> summaries = new ArrayList();
+		
+		for (Object[] result : results) {
+			Integer status = (Integer) result[0];
+			Integer count = (Integer) result[1];
+			
+			ProductStatusSummary summary = new ProductStatusSummary(status, count.longValue());
+			summaries.add(summary);
+		}
+		
+		return summaries;
 	}
 
 }

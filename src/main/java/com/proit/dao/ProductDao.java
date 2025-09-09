@@ -2,6 +2,7 @@ package com.proit.dao;
 
 import java.util.List;
 
+import com.proit.dto.ProductStatusSummary;
 import com.proit.model.Category;
 import com.proit.model.Product;
 import com.proit.model.ProductStatus;
@@ -58,5 +59,9 @@ public interface ProductDao {
 	List<Product> findByStatus(ProductStatus status, int pageNo, int pageSize);
 	
 	Long countByStatus(ProductStatus status);
+	
+	void updateStatusById(Long id, ProductStatus status);
+	
+	List<ProductStatusSummary> countProductByStatus();
 
 }
