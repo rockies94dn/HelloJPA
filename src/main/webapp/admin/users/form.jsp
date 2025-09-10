@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<c:set var="pageTitle" value="Đăng ký" />
+<c:set var="pageTitle" value="Chi tiết người dùng" />
 <%@ include file="/admin/common/header.jsp"%>
 
 <body>
@@ -33,20 +33,19 @@
 			<div class="row mt-2">
 				<div class="col">
 					<label for="password">Password</label> <input type="password"
-						id="password" name="password" class="form-control"
-						value="${user.password }" required />
+						id="password" name="password" class="form-control" required />
 				</div>
 
 				<div class="col">
 					<label for="role">Role</label> <select
-						class="form-select form-select-sm" name="role" id="role">
-						<option value="ADMIN" ${user.role == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
-						<option value="USER" ${user.role == 'USER' ? 'selected' : ''}>USER</option>
-						<option value="GUEST" ${user.role == 'GUEST' ? 'selected' : ''}>GUEST</option>
+						class="form-select form-select-sm" name="roleStr" id="roleStr">
+						<option value="ADMIN" ${user.roleStr == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+						<option value="USER" ${user.roleStr == 'USER' ? 'selected' : ''}>USER</option>
+						<option value="GUEST" ${user.roleStr == 'GUEST' ? 'selected' : ''}>GUEST</option>
 						<option value="MODERATOR"
-							${user.role == 'MODERATOR' ? 'selected' : ''}>MODERATOR</option>
+							${user.roleStr == 'MODERATOR' ? 'selected' : ''}>MODERATOR</option>
 						<option value="SUPER_ADMIN"
-							${user.role == 'SUPER_ADMIN' ? 'selected' : ''}>SUPER
+							${user.roleStr == 'SUPER_ADMIN' ? 'selected' : ''}>SUPER
 							ADMIN</option>
 					</select>
 				</div>
@@ -55,21 +54,36 @@
 			<div class="row mt-2">
 				<div class="col d-flex flex-row justify-content-between">
 					<div class="">
-						<button formaction="${path}/create" class="btn btn-primary btn-sm">
-							<i class="fa fa-plus" aria-hidden="true"></i> Create
-						</button>
-						<button formaction="${path}/update" class="btn btn-warning btn-sm">
-							<i class="fa fa-edit" aria-hidden="true"></i> Update
-						</button>
-						<button formaction="${path}/delete" class="btn btn-danger btn-sm">
-							<i class="fa fa-remove" aria-hidden="true"></i> Delete
-						</button>
-						<button formaction="${path}/reset" class="btn btn-success btn-sm">
+						<c:if test="${user.id == null}">
+							<button type="submit" formaction="${path}/create"
+								class="btn btn-primary btn-sm">
+								<i class="fa fa-plus" aria-hidden="true"></i> Create
+							</button>
+						</c:if>
+
+						<c:if test="${user.id != null}">
+							<button type="submit" formaction="${path}/update"
+								class="btn btn-warning btn-sm"
+								onclick="return confirmFormUpdate(this, '${user.name}')">
+								<i class="fa fa-edit" aria-hidden="true"></i> Update
+							</button>
+						</c:if>
+
+
+						<c:if test="${user.id != null}">
+							<a class="btn btn-danger btn-sm"
+								onclick="confirmDelete('${path}/delete/${user.id}', '${user.name}')">
+								<i class="fa fa-remove" aria-hidden="true"></i> Delete
+							</a>
+						</c:if>
+
+						<button type="submit" formaction="${path}/create" formmethod="get"
+							class="btn btn-success btn-sm">
 							<i class="fa fa-refresh" aria-hidden="true"></i> Reset
 						</button>
 					</div>
 					<div class="">
-						<a href="${path}/index" class="btn btn-outline-primary btn-sm">
+						<a href="${path}/list" class="btn btn-outline-primary btn-sm">
 							<i class="fa fa-list" aria-hidden="true"></i> Users List
 						</a>
 					</div>
@@ -79,6 +93,10 @@
 		</form>
 
 	</main>
+
+	<%@ include file="/admin/common/confirm-form-update-modal.jsp"%>
+
+	<%@ include file="/admin/common/delete-confirm-modal.jsp"%>
 
 	<%@ include file="/admin/common/footer.jsp"%>
 </body>

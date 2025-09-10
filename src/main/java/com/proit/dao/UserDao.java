@@ -8,10 +8,20 @@ public interface UserDao {
 
 	List<User> findAll();
 	
+	User findById(Long id);
+	
+	List<User> findByName(String name);
+	
+	List<User> findByEmail(String email);
+	
 	void insert(User user);
 	
 	void update(Long id, User user);
 	
 	void delete(Long id);
+
+	List<User> findAll(int pageNo, int pageSize);
+	
+	Long countAllUsers();
 
 }

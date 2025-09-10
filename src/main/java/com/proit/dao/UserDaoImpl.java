@@ -20,6 +20,17 @@ public class UserDaoImpl implements UserDao {
 		TypedQuery<User> query = em.createQuery(jpql, User.class);
 		return query.getResultList();
 	}
+	
+	@Override
+	public List<User> findAll(int pageNo, int pageSize) {
+		EntityManager em = JpaHelper.instance();
+		String jpql = "SELECT u FROM User u";
+		TypedQuery<User> query = em.createQuery(jpql, User.class);
+		query.setFirstResult(pageNo * pageSize);
+		query.setMaxResults(pageSize);
+		return query.getResultList();
+	}
+
 
 	@Override
 	public void insert(User entity) {
@@ -82,11 +93,45 @@ public class UserDaoImpl implements UserDao {
 
 	public User findById(Long id) {
 		EntityManager em = JpaHelper.instance();
-		String jpql = "SELECT u FROM User u WHERE u.id = :id";
-		TypedQuery<User> query = em.createQuery(jpql, User.class);
-		query.setParameter("id", id);
-		return query.getSingleResult();
+		try {
+			//Dùng method find sẵn có trong EM để tìm entity qua khoá chính, không cần truyền jpql thủ công
+			return em.find(User.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
+	@Override
+	public List<User> findByName(String name) {
+		EntityManager em = JpaHelper.instance();
+		String jpql = "SELECT u FROM User u WHERE u.name LIKE :name";
+		TypedQuery<User> query = em.createQuery(jpql, User.class);
+		query.setParameter("name", "%" + name + "%");
+		return query.getResultList();
+	}
+
+	@Override
+	public List<User> findByEmail(String email) {
+		EntityManager em = JpaHelper.instance();
+		String jpql = "SELECT u FROM User u WHERE u.email = :email";
+		try {
+			TypedQuery<User> query = em.createQuery(jpql, User.class);
+			query.setParameter("email", email);
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+
+	@Override
+	public Long countAllUsers() {
+		EntityManager em = JpaHelper.instance();
+		String jpql = "SELECT COUNT(u) FROM User u";
+		TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+		return query.getSingleResult();
 	}
 
 }

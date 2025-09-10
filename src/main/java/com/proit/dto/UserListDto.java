@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserListDto {
 
 	private Long id;
 
@@ -17,7 +17,11 @@ public class UserDto {
 
 	private String email;
 
-	private String password;
+	private String statusStr;
 
 	private String roleStr;
+	
+	private LocalDate createAt;
+	
+	private String createAtStr;
 }
