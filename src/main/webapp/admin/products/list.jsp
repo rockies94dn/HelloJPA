@@ -4,7 +4,7 @@
 <c:set var="pageTitle" value="Danh sách sản phẩm" />
 <%@ include file="/admin/common/header.jsp"%>
 <body>
-	<c:url var="path" value="/products"></c:url>
+	<c:url var="path" value="/admin/products"></c:url>
 	<main class="container mt-2">
 
 		<c:if test="${message != null}">

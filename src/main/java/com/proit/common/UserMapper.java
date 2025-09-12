@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import com.proit.dto.UserDetailDto;
 import com.proit.dto.UserDto;
 import com.proit.dto.UserListDto;
 import com.proit.model.User;
@@ -27,7 +28,7 @@ public class UserMapper {
 		dto.setRoleStr(entity.getRole() != null ? entity.getRole().name() : null);
 		return dto;
 	}
-	
+
 	public static User dtoToEntity(UserDto dto) {
 		if (dto == null) {
 			return null;
@@ -41,7 +42,7 @@ public class UserMapper {
 		entity.setRole(UserRole.valueOf(dto.getRoleStr()));
 		return entity;
 	}
-	
+
 	public static UserListDto toListDto(User entity) {
 		if (entity == null) {
 			return null;
@@ -54,10 +55,12 @@ public class UserMapper {
 		}
 		dto.setRoleStr(entity.getRole() != null ? entity.getRole().name() : null);
 		dto.setStatusStr(entity.getStatus() != null ? entity.getStatus().name() : null);
-		dto.setCreateAtStr(entity.getCreateAt() != null ? entity.getCreateAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "");
+		dto.setCreateAtStr(
+				entity.getCreateAt() != null ? entity.getCreateAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+						: "");
 		return dto;
 	}
-	
+
 	public static User listDtoToEntity(UserListDto dto) {
 		if (dto == null) {
 			return null;
@@ -72,7 +75,25 @@ public class UserMapper {
 		entity.setStatus(UserStatus.valueOf(dto.getStatusStr()));
 		return entity;
 	}
-	
+
+	public static UserDetailDto toDetailDto(User entity) {
+		if (entity == null) {
+			return null;
+		}
+		UserDetailDto dto = new UserDetailDto();
+		try {
+			BeanUtils.copyProperties(dto, entity);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		dto.setRoleName(entity.getRole() != null ? entity.getRole().name() : "");
+		dto.setStatusName(entity.getStatus() != null ? entity.getStatus().name() : "");
+		dto.setCreateAtStr(entity.getCreateAt() != null ? entity.getCreateAt().toString() : "");
+		dto.setLastLoginAtStr(entity.getLastLoginAt() != null ? entity.getLastLoginAt().toString() : "");
+		dto.setUpdateAtStr(entity.getUpdateAt() != null ? entity.getUpdateAt().toString() : "");
+		return dto;
+	}
+
 	public static List<UserDto> entitiesToDtos(List<User> entities) {
 		List<UserDto> dtos = new ArrayList<UserDto>();
 		for (User entity : entities) {
@@ -82,7 +103,6 @@ public class UserMapper {
 		}
 		return dtos;
 	}
-	
 
 	public static List<UserListDto> entitiesToListDtos(List<User> entities) {
 		List<UserListDto> dtos = new ArrayList<UserListDto>();
@@ -93,7 +113,7 @@ public class UserMapper {
 		}
 		return dtos;
 	}
-	
+
 	public static List<User> dtosToEntities(List<UserDto> dtos) {
 		List<User> entities = new ArrayList<User>();
 		for (UserDto dto : dtos) {
@@ -103,7 +123,7 @@ public class UserMapper {
 		}
 		return entities;
 	}
-	
+
 	public static List<User> listDtosToEntities(List<UserListDto> dtos) {
 		List<User> entities = new ArrayList<User>();
 		for (UserListDto dto : dtos) {

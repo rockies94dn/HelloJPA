@@ -3,9 +3,11 @@ package com.proit.controller;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -13,15 +15,21 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import com.proit.common.CustomBeanUtils;
 import com.proit.dao.CategoryDao;
 import com.proit.dao.CategoryDaoImpl;
+import com.proit.dao.UserDao;
+import com.proit.dao.UserDaoImpl;
+import com.proit.dto.LoginDto;
 import com.proit.model.Category;
+import com.proit.model.User;
+import com.proit.model.UserStatus;
 
 /**
  * Servlet implementation class CategoryController
  */
-@WebServlet({ "/categories/index", "/categories/create", "/categories/update", "/categories/edit/*",
-		"/categories/reset", "/categories/delete/*", "/categories/delete", "/categories/findbyname" })
+@WebServlet({ "/admin/categories/index", "/admin/categories/create", "/admin/categories/update", "/admin/categories/edit/*",
+		"/admin/categories/reset", "/admin/categories/delete/*", "/admin/categories/delete", "/admin/categories/findbyname" })
 public class CategoryController extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -30,6 +38,44 @@ public class CategoryController extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		System.out.println("In service");
+//		
+//		 // --- 1. Kiểm tra session / cookie rememberMe ---
+//	    HttpSession session = request.getSession(false);
+//	    if (session == null || session.getAttribute("user") == null) {
+//	        // Chưa có session → check cookie
+//	        Cookie[] cookies = request.getCookies();
+//	        if (cookies != null) {
+//	            for (Cookie cookie : cookies) {
+//	                if ("rememberMe".equals(cookie.getName())) {
+//	                    String email = cookie.getValue();
+//	                    if (email != null && !email.isEmpty()) {
+//	                        UserDao userDao = new UserDaoImpl();
+//	                        User user = userDao.findByEmail(email);
+//	                        if (user != null && user.getStatus() == UserStatus.ACTIVE) {
+//	                            // Tạo session mới
+//	                            session = request.getSession(true);
+//	                            LoginDto loginDto = new LoginDto();
+//	                            try {
+//									CustomBeanUtils.instance().copyProperties(loginDto, user);
+//								} catch (IllegalAccessException | InvocationTargetException e) {
+//									e.printStackTrace();
+//								}
+//	                            loginDto.setPassword(null);
+//	                            loginDto.setRememberMe(true);
+//	                            session.setAttribute("user", loginDto);
+//	                            break; // cookie hợp lệ → thoát vòng for
+//	                        }
+//	                    }
+//	                }
+//	            }
+//	        }
+//
+//	        // Nếu sau check cookie vẫn chưa có session → redirect login
+//	        if (session == null || session.getAttribute("user") == null) {
+//	            response.sendRedirect(request.getContextPath() + "/login");
+//	            return;
+//	        }
+//	    }
 
 		CategoryDao dao = new CategoryDaoImpl();
 		request.removeAttribute("message");

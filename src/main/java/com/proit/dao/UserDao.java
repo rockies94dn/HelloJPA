@@ -12,7 +12,7 @@ public interface UserDao {
 	
 	List<User> findByName(String name);
 	
-	List<User> findByEmail(String email);
+	User findByEmail(String email);
 	
 	void insert(User user);
 	
@@ -23,5 +23,7 @@ public interface UserDao {
 	List<User> findAll(int pageNo, int pageSize);
 	
 	Long countAllUsers();
+
+	User findByEmailAndPassword(String email, String password);
 
 }

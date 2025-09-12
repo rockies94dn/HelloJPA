@@ -112,18 +112,33 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<User> findByEmail(String email) {
+	public User findByEmail(String email) {
 		EntityManager em = JpaHelper.instance();
 		String jpql = "SELECT u FROM User u WHERE u.email = :email";
 		try {
 			TypedQuery<User> query = em.createQuery(jpql, User.class);
 			query.setParameter("email", email);
-			return query.getResultList();
+			return query.getSingleResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 		
+	}
+	
+	@Override
+	public User findByEmailAndPassword(String email, String password) {
+		EntityManager em = JpaHelper.instance();
+		String jpql = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password";
+		try {
+			TypedQuery<User> query = em.createQuery(jpql, User.class);
+			query.setParameter("email", email);
+			query.setParameter("password", password);
+			return query.getSingleResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

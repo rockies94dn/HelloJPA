@@ -1,21 +1,14 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<!DOCTYPE html>
 
-<html lang="en">
-
-<c:url var="path" value="/categories"></c:url>
-<head>
-<title><c:out value="${pageTitle}" /></title>
 <!-- Required meta tags -->
-<meta charset="utf-8" />
+<meta charset="UTF-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
 <base href="${pageContext.request.contextPath}/" />
 
-<!-- Bootstrap CSS v5.2.1 -->
+
+<!-- <!-- Bootstrap 5 CSS -->
+
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -29,6 +22,5 @@
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!-- (Optional) Use CSS or JS implementation -->
+<link rel="stylesheet" href="css/admin.css" />
 
-
-</head>

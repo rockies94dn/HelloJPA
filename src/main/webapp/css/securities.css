@@ -1,0 +1,163 @@
+@charset "UTF-8";
+
+body {
+	background: linear-gradient(135deg, #6c63ff 0%, #8b7bff 100%);
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.login-card {
+	width: 100%;
+	max-width: 380px;
+	border-radius: 16px;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+	padding: 2rem;
+	background: #fff;
+}
+
+.brand-icon {
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #6c63ff, #8b7bff);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 1rem;
+}
+
+.brand-icon i {
+	color: #fff;
+	font-size: 1.5rem;
+}
+
+.brand-title {
+	text-align: center;
+	font-weight: 700;
+	margin-bottom: .25rem;
+}
+
+.brand-subtitle {
+	text-align: center;
+	font-size: .9rem;
+	color: #6c757d;
+	margin-bottom: 1.5rem;
+}
+
+.form-control:focus {
+	box-shadow: none;
+	border-color: #6c63ff;
+}
+
+.input-icon {
+	width: 2.6rem;
+	text-align: center;
+}
+
+.btn-primary {
+	background: linear-gradient(135deg, #6c63ff, #8b7bff);
+	border: none;
+}
+
+.btn-primary:hover {
+	opacity: 0.9;
+}
+
+.divider {
+	text-align: center;
+	position: relative;
+	margin: 1.5rem 0;
+}
+
+.divider::before, .divider::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	width: 40%;
+	height: 1px;
+	background: #dee2e6;
+}
+
+.divider::before {
+	left: 0;
+}
+
+.divider::after {
+	right: 0;
+}
+
+.divider span {
+	padding: 0 .5rem;
+	background: #fff;
+	color: #6c757d;
+	font-size: .85rem;
+}
+
+body {
+	background: linear-gradient(135deg, #6c63ff 0%, #8b7bff 100%);
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.forgot-card {
+	width: 100%;
+	max-width: 380px;
+	border-radius: 16px;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+	padding: 2rem;
+	background: #fff;
+}
+
+.brand-icon {
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #6c63ff, #8b7bff);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 1rem;
+}
+
+.brand-icon i {
+	color: #fff;
+	font-size: 1.5rem;
+}
+
+.brand-title {
+	text-align: center;
+	font-weight: 700;
+	margin-bottom: .25rem;
+}
+
+.brand-subtitle {
+	text-align: center;
+	font-size: .9rem;
+	color: #6c757d;
+	margin-bottom: 1.5rem;
+}
+
+.form-control:focus {
+	box-shadow: none;
+	border-color: #6c63ff;
+}
+
+.input-icon {
+	width: 2.6rem;
+	text-align: center;
+}
+
+.btn-primary {
+	background: linear-gradient(135deg, #6c63ff, #8b7bff);
+	border: none;
+}
+
+.btn-primary:hover {
+	opacity: 0.9;
+}

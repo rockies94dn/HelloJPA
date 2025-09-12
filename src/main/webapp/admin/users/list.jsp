@@ -14,7 +14,17 @@
 			<div class="alert alert-danger p-1">${error}</div>
 		</c:if>
 
-		<div class="row">
+		<div class="row d-flex justify-content-between align-items-center mb-3">
+			<div class="col">
+				<form action="${path }/search" method="get" class="form-inline">
+					<div class="form-group input-group input-group-sm">
+						<label for="search" class="sr-only">Search By Name Or
+							Email</label> <input type="text" class="form-control form-control-sm"
+							name="search" id="search" placeholder="Search by name..." />
+						<button type="submit" class="btn btn-primary btn-sm mb-2 ml-2">Search</button>
+					</div>
+				</form>
+			</div>
 			<div class="col d-flex justify-content-end">
 				<a href="${path}/create" class="btn btn-outline-primary btn-sm">
 					<i class="fa fa-plus" aria-hidden="true"></i> Create
@@ -47,9 +57,8 @@
 							<td><a href="${path}/view/${user.id}"
 								class="btn btn-outline-primary btn-sm"> <i class="fa fa-eye"
 									aria-hidden="true"></i> View
-							</a> <a href="${path}/edit/${user.id}"
-								class="btn btn-primary btn-sm"> <i class="fa fa-edit"
-									aria-hidden="true"></i> Edit
+							</a> <a href="${path}/edit/${user.id}" class="btn btn-primary btn-sm">
+									<i class="fa fa-edit" aria-hidden="true"></i> Edit
 							</a>
 								<button type="button"
 									onclick="confirmDelete('${path}/delete/${user.id}', '${user.name}')"

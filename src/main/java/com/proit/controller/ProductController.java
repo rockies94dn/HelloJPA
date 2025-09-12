@@ -32,9 +32,9 @@ import com.proit.model.Product;
 import com.proit.model.ProductStatus;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
-@WebServlet({ "/products/index", "/products/create", "/products/update", "/products/updateStatus", "/products/edit/*",
-		"/products/reset", "/products/delete", "/products/delete/*", "/products/search", "/products/view/*",
-		"/products/listByCategory/*", "/products/searchSort", "/products/deleteByStatus", "/products/searchByStatus" })
+@WebServlet({ "/admin/products/index", "/admin/products/create", "/admin/products/update", "/admin/products/updateStatus", "/admin/products/edit/*",
+		"/admin/products/reset", "/admin/products/delete", "/admin/products/delete/*", "/admin/products/search", "/admin/products/view/*",
+		"/admin/products/listByCategory/*", "/admin/products/searchSort", "/admin/products/deleteByStatus", "/admin/products/searchByStatus" })
 public class ProductController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

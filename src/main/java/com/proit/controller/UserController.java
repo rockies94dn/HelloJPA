@@ -18,6 +18,7 @@ import com.proit.common.PaginationUtils;
 import com.proit.common.UserMapper;
 import com.proit.dao.UserDao;
 import com.proit.dao.UserDaoImpl;
+import com.proit.dto.UserDetailDto;
 import com.proit.dto.UserDto;
 import com.proit.dto.UserListDto;
 import com.proit.model.User;
@@ -27,8 +28,8 @@ import com.proit.model.UserStatus;
 /**
  * Servlet implementation class UserController
  */
-@WebServlet({ "/admin/users/create", "/admin/users/update", "/admin/users/delete/*", "/admin/users/edit/*",
-		"/admin/users/list" })
+@WebServlet({ "/admin/users/create", "/admin/users/update", "/admin/users/view/*", "/admin/users/delete/*",
+		"/admin/users/edit/*", "/admin/users/search", "/admin/users/list" })
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -70,6 +71,23 @@ public class UserController extends HttpServlet {
 
 			} else if (uri.contains("/list")) {
 				viewType = usersList(request, dao);
+
+			} else if (uri.contains("/view")) {
+				viewType = viewUserDetail(request, uri, dao);
+			} else if (uri.contains("/search")) {
+
+				String searchQuery = request.getParameter("search");
+				if (searchQuery == null || searchQuery.isEmpty()) {
+					throw new Exception("Search query is required to searching.");
+				}
+				var users = dao.findByName(searchQuery);
+				
+				var userDtos = UserMapper.entitiesToListDtos(users);
+				
+				request.setAttribute("users", userDtos);
+				request.setAttribute("message", "Found " + userDtos.size() + " users.");
+				viewType = "/admin/users/list.jsp";
+			
 			} else {
 
 			}
@@ -80,6 +98,21 @@ public class UserController extends HttpServlet {
 
 		RequestDispatcher rd = request.getRequestDispatcher(viewType);
 		rd.forward(request, response);
+	}
+
+	private String viewUserDetail(HttpServletRequest request, String uri, UserDao dao) throws Exception {
+		String viewType;
+		String idStr = uri.substring(uri.lastIndexOf("/") + 1);
+		User user = dao.findById(Long.parseLong(idStr));
+		if (user == null) {
+			throw new Exception("User not found with ID: " + idStr);
+		}
+
+		UserDetailDto userDetailDto = UserMapper.toDetailDto(user);
+		request.setAttribute("user", userDetailDto);
+		System.out.println(userDetailDto.toString());
+		viewType = "/admin/users/view.jsp";
+		return viewType;
 	}
 
 	private String deleteUser(HttpServletRequest request, String uri, UserDao dao) throws Exception {
